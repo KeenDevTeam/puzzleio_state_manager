@@ -45,5 +45,5 @@ export interface StorageAdapter {
 	 * Get a flow history
 	 * @param flowId Target flow ID
 	 */
-	history(flowId: string): Promise<Array<any>>;
-};
+	history(flowId: string): Promise<Array<any>>; // eslint-disable-line @typescript-eslint/no-explicit-any
+}
