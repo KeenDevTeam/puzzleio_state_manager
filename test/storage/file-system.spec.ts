@@ -1,25 +1,41 @@
 /**
- * Memory storage tests
+ * FileSystem storage tests
  */
+
+import { mkdirSync, } from 'fs';
+import { join as joinPath, resolve as resolvePath, } from 'path';
 
 import 'mocha';
 import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+import { sync as rimraf } from 'rimraf';
 
-import { MemoryStorage } from '../src/storage/memory';
-import { StorageAdapter } from '../src/type/storage-adapter';
+import { FileSystemStorage } from '../../src/storage/file-system';
+import { StorageAdapter } from '../../src/type/storage-adapter';
 
 chai.use(chaiAsPromised);
 
-describe('[PuzzleIO][StateManager][Storage][Memory]', () => {
+const stateFolderName = resolvePath(joinPath(__dirname, 'test_state'));
+
+describe('[PuzzleIO][StateManager][Storage][FileSystem]', () => {
+
+	before(async () => {
+		mkdirSync(stateFolderName);
+	});
+
+	after(async () => {
+		rimraf(stateFolderName);
+	});
 
 	describe('initialize', () => {
 
 		it('should successfully called', async () => {
 
-			const instance = new MemoryStorage();
+			const instance = new FileSystemStorage({
+				rootDir: stateFolderName,
+			});
 
-			expect(instance).to.be.instanceOf(MemoryStorage);
+			expect(instance).to.be.instanceOf(FileSystemStorage);
 			expect(instance.initialize()).to.be.eventually.eq(undefined);
 		});
 
@@ -27,14 +43,16 @@ describe('[PuzzleIO][StateManager][Storage][Memory]', () => {
 
 	describe('save', () => {
 
-		const instance: StorageAdapter = new MemoryStorage();
 		let testFlowId: string | void = '';
 
 		describe('success', () => {
 
 			it('should save a new item when flowId is missing', async () => {
 
-				expect(instance).to.be.instanceOf(MemoryStorage);
+				const instance: StorageAdapter = new FileSystemStorage({
+					rootDir: stateFolderName,
+				});
+				expect(instance).to.be.instanceOf(FileSystemStorage);
 
 				testFlowId = await instance.save<number>(0);
 				expect(testFlowId).to.be.a('string');
@@ -45,7 +63,10 @@ describe('[PuzzleIO][StateManager][Storage][Memory]', () => {
 
 			it('should update current state using the previously added flowId', async () => {
 
-				expect(instance).to.be.instanceOf(MemoryStorage);
+				const instance: StorageAdapter = new FileSystemStorage({
+					rootDir: stateFolderName,
+				});
+				expect(instance).to.be.instanceOf(FileSystemStorage);
 
 				await instance.save<number>(1, testFlowId + '');
 				expect(testFlowId).to.be.a('string');
@@ -61,8 +82,10 @@ describe('[PuzzleIO][StateManager][Storage][Memory]', () => {
 
 		it('should return null when the key does not exist', async () => {
 
-			const instance: StorageAdapter = new MemoryStorage();
-			expect(instance).to.be.instanceOf(MemoryStorage);
+			const instance: StorageAdapter = new FileSystemStorage({
+				rootDir: stateFolderName,
+			});
+			expect(instance).to.be.instanceOf(FileSystemStorage);
 
 			const state = await instance.load<number>('invalid-id');
 			expect(state).to.be.null;
@@ -70,8 +93,10 @@ describe('[PuzzleIO][StateManager][Storage][Memory]', () => {
 
 		it('should return current value when the key exists', async () => {
 
-			const instance: StorageAdapter = new MemoryStorage();
-			expect(instance).to.be.instanceOf(MemoryStorage);
+			const instance: StorageAdapter = new FileSystemStorage({
+				rootDir: stateFolderName,
+			});
+			expect(instance).to.be.instanceOf(FileSystemStorage);
 
 			const flowId = await instance.save<number>(0) as string;
 
@@ -88,8 +113,10 @@ describe('[PuzzleIO][StateManager][Storage][Memory]', () => {
 
 		it('should return 0 when the key does not exist', async () => {
 
-			const instance: StorageAdapter = new MemoryStorage();
-			expect(instance).to.be.instanceOf(MemoryStorage);
+			const instance: StorageAdapter = new FileSystemStorage({
+				rootDir: stateFolderName,
+			});
+			expect(instance).to.be.instanceOf(FileSystemStorage);
 
 			const state = await instance.getStackSize('invalid-id');
 			expect(state).to.be.a('number').that.is.eq(0);
@@ -97,8 +124,10 @@ describe('[PuzzleIO][StateManager][Storage][Memory]', () => {
 
 		it('should return current stack size when the key exists', async () => {
 
-			const instance: StorageAdapter = new MemoryStorage();
-			expect(instance).to.be.instanceOf(MemoryStorage);
+			const instance: StorageAdapter = new FileSystemStorage({
+				rootDir: stateFolderName,
+			});
+			expect(instance).to.be.instanceOf(FileSystemStorage);
 
 			const flowId = await instance.save<number>(0) as string;
 			const currentStackSize = await instance.getStackSize(flowId);
@@ -115,8 +144,10 @@ describe('[PuzzleIO][StateManager][Storage][Memory]', () => {
 
 		it('should return empty array when the key does not exist', async () => {
 
-			const instance: StorageAdapter = new MemoryStorage();
-			expect(instance).to.be.instanceOf(MemoryStorage);
+			const instance: StorageAdapter = new FileSystemStorage({
+				rootDir: stateFolderName,
+			});
+			expect(instance).to.be.instanceOf(FileSystemStorage);
 
 			const history = await instance.history('invalid-id');
 			expect(history).to.be.an('array').that.has.lengthOf(0);
@@ -124,8 +155,10 @@ describe('[PuzzleIO][StateManager][Storage][Memory]', () => {
 
 		it('should return current stacked items when the key exists', async () => {
 
-			const instance: StorageAdapter = new MemoryStorage();
-			expect(instance).to.be.instanceOf(MemoryStorage);
+			const instance: StorageAdapter = new FileSystemStorage({
+				rootDir: stateFolderName,
+			});
+			expect(instance).to.be.instanceOf(FileSystemStorage);
 
 			const flowId = await instance.save<number>(0) as string;
 			const currentHistory = await instance.history(flowId);

@@ -6,10 +6,10 @@ import 'mocha';
 import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
-import { createValidMongoClient } from './mock/mongo';
+import { createValidMongoClient } from '../mock/mongo';
 
-import { MongoStorage, defaultConfig as MongoStorageDefaultConfig } from '../src/storage/mongo';
-import { StorageAdapter } from '../src/type/storage-adapter';
+import { MongoStorage, defaultConfig as MongoStorageDefaultConfig } from '../../src/storage/mongo';
+import { StorageAdapter } from '../../src/type/storage-adapter';
 
 chai.use(chaiAsPromised);
 

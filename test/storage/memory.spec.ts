@@ -1,58 +1,25 @@
 /**
- * Redis storage tests
+ * Memory storage tests
  */
 
 import 'mocha';
 import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 
-import { createValidRedisClient } from './mock/redis';
-
-import { RedisStorage } from '../src/storage/redis';
-import { StorageAdapter } from '../src/type/storage-adapter';
+import { MemoryStorage } from '../../src/storage/memory';
+import { StorageAdapter } from '../../src/type/storage-adapter';
 
 chai.use(chaiAsPromised);
 
-describe('[PuzzleIO][StateManager][Storage][Redis]', () => {
-
-	describe('constructor', () => {
-
-		it('should fail if redisClient is undefined', () => {
-			expect(() => new RedisStorage()).throw('\'redisClient\' is not provided (null or undefined).');
-		});
-
-		it('should successfully return an instance of RedisStorage', async () => {
-
-			const instance = new RedisStorage(
-				await createValidRedisClient()
-			);
-
-			expect(instance).to.be.instanceOf(RedisStorage);
-		});
-
-		it('should successfully return an instance of RedisStorage with provided configuration', async () => {
-
-			const instance = new RedisStorage(
-				await createValidRedisClient(),
-				{
-					prefix: 'PFX',
-				}
-			);
-
-			expect(instance).to.be.instanceOf(RedisStorage);
-		});
-
-	});
+describe('[PuzzleIO][StateManager][Storage][Memory]', () => {
 
 	describe('initialize', () => {
 
 		it('should successfully called', async () => {
 
-			const instance = new RedisStorage(
-				await createValidRedisClient()
-			);
+			const instance = new MemoryStorage();
 
-			expect(instance).to.be.instanceOf(RedisStorage);
+			expect(instance).to.be.instanceOf(MemoryStorage);
 			expect(instance.initialize()).to.be.eventually.eq(undefined);
 		});
 
@@ -60,14 +27,14 @@ describe('[PuzzleIO][StateManager][Storage][Redis]', () => {
 
 	describe('save', () => {
 
+		const instance: StorageAdapter = new MemoryStorage();
 		let testFlowId: string | void = '';
 
 		describe('success', () => {
 
 			it('should save a new item when flowId is missing', async () => {
 
-				const instance: StorageAdapter = new RedisStorage(await createValidRedisClient(),);
-				expect(instance).to.be.instanceOf(RedisStorage);
+				expect(instance).to.be.instanceOf(MemoryStorage);
 
 				testFlowId = await instance.save<number>(0);
 				expect(testFlowId).to.be.a('string');
@@ -78,8 +45,7 @@ describe('[PuzzleIO][StateManager][Storage][Redis]', () => {
 
 			it('should update current state using the previously added flowId', async () => {
 
-				const instance: StorageAdapter = new RedisStorage(await createValidRedisClient(),);
-				expect(instance).to.be.instanceOf(RedisStorage);
+				expect(instance).to.be.instanceOf(MemoryStorage);
 
 				await instance.save<number>(1, testFlowId + '');
 				expect(testFlowId).to.be.a('string');
@@ -95,8 +61,8 @@ describe('[PuzzleIO][StateManager][Storage][Redis]', () => {
 
 		it('should return null when the key does not exist', async () => {
 
-			const instance: StorageAdapter = new RedisStorage(await createValidRedisClient(),);
-			expect(instance).to.be.instanceOf(RedisStorage);
+			const instance: StorageAdapter = new MemoryStorage();
+			expect(instance).to.be.instanceOf(MemoryStorage);
 
 			const state = await instance.load<number>('invalid-id');
 			expect(state).to.be.null;
@@ -104,8 +70,8 @@ describe('[PuzzleIO][StateManager][Storage][Redis]', () => {
 
 		it('should return current value when the key exists', async () => {
 
-			const instance: StorageAdapter = new RedisStorage(await createValidRedisClient(),);
-			expect(instance).to.be.instanceOf(RedisStorage);
+			const instance: StorageAdapter = new MemoryStorage();
+			expect(instance).to.be.instanceOf(MemoryStorage);
 
 			const flowId = await instance.save<number>(0) as string;
 
@@ -122,8 +88,8 @@ describe('[PuzzleIO][StateManager][Storage][Redis]', () => {
 
 		it('should return 0 when the key does not exist', async () => {
 
-			const instance: StorageAdapter = new RedisStorage(await createValidRedisClient(),);
-			expect(instance).to.be.instanceOf(RedisStorage);
+			const instance: StorageAdapter = new MemoryStorage();
+			expect(instance).to.be.instanceOf(MemoryStorage);
 
 			const state = await instance.getStackSize('invalid-id');
 			expect(state).to.be.a('number').that.is.eq(0);
@@ -131,8 +97,8 @@ describe('[PuzzleIO][StateManager][Storage][Redis]', () => {
 
 		it('should return current stack size when the key exists', async () => {
 
-			const instance: StorageAdapter = new RedisStorage(await createValidRedisClient(),);
-			expect(instance).to.be.instanceOf(RedisStorage);
+			const instance: StorageAdapter = new MemoryStorage();
+			expect(instance).to.be.instanceOf(MemoryStorage);
 
 			const flowId = await instance.save<number>(0) as string;
 			const currentStackSize = await instance.getStackSize(flowId);
@@ -149,8 +115,8 @@ describe('[PuzzleIO][StateManager][Storage][Redis]', () => {
 
 		it('should return empty array when the key does not exist', async () => {
 
-			const instance: StorageAdapter = new RedisStorage(await createValidRedisClient(),);
-			expect(instance).to.be.instanceOf(RedisStorage);
+			const instance: StorageAdapter = new MemoryStorage();
+			expect(instance).to.be.instanceOf(MemoryStorage);
 
 			const history = await instance.history('invalid-id');
 			expect(history).to.be.an('array').that.has.lengthOf(0);
@@ -158,8 +124,8 @@ describe('[PuzzleIO][StateManager][Storage][Redis]', () => {
 
 		it('should return current stacked items when the key exists', async () => {
 
-			const instance: StorageAdapter = new RedisStorage(await createValidRedisClient(),);
-			expect(instance).to.be.instanceOf(RedisStorage);
+			const instance: StorageAdapter = new MemoryStorage();
+			expect(instance).to.be.instanceOf(MemoryStorage);
 
 			const flowId = await instance.save<number>(0) as string;
 			const currentHistory = await instance.history(flowId);
@@ -173,12 +139,5 @@ describe('[PuzzleIO][StateManager][Storage][Redis]', () => {
 			expect(updatedHistory[1]).to.be.a('number').that.is.eq(0);
 		});
 
-	});
-
-	after((done) => {
-
-		createValidRedisClient()
-			.then(client => client.flushdb(() => done()))
-			.catch(done);
 	});
 });
