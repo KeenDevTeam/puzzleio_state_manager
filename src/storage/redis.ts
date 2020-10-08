@@ -67,7 +67,7 @@ export class RedisStorage implements StorageAdapter {
 		// make sure the database is ready
 		this.ensureDatabaseIsReady();
 
-		await promisify<ServerInfo>(this.connection!.info).bind(this.connection!);
+		await promisify<ServerInfo>(this.connection!.info).bind(this.connection!); // eslint-disable-line @typescript-eslint/no-non-null-assertion
 	}
 
 	/**
@@ -75,7 +75,7 @@ export class RedisStorage implements StorageAdapter {
 	 * @param state Initial state of the flow
 	 */
 	async save<T>(state: T): Promise<string | void>;
-	
+
 	/**
 	 * Set the current state of a flow
 	 * @param state Current state
@@ -86,7 +86,7 @@ export class RedisStorage implements StorageAdapter {
 		// make sure the database is ready
 		this.ensureDatabaseIsReady();
 
-		let isNew: boolean = false;
+		let isNew = false;
 
 		if (!flowId) {
 			flowId = await this.generateFlowId();
@@ -94,8 +94,8 @@ export class RedisStorage implements StorageAdapter {
 		}
 
 		// promisified function(s)
-		const setKey = promisify<string, string>(this.connection!.set).bind(this.connection!);
-		const lpush = promisify<string, string>(this.connection!.lpush).bind(this.connection!);
+		const setKey = promisify<string, string>(this.connection!.set).bind(this.connection!);  // eslint-disable-line @typescript-eslint/no-non-null-assertion
+		const lpush = promisify<string, string>(this.connection!.lpush).bind(this.connection!);  // eslint-disable-line @typescript-eslint/no-non-null-assertion
 
 		if (isNew) {
 
@@ -164,6 +164,7 @@ export class RedisStorage implements StorageAdapter {
 		// make sure the database is ready
 		this.ensureDatabaseIsReady();
 
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const getByListIndex = promisify<string, number, string>(this.connection!.lindex).bind(this.connection!);
 
 		const keyName: string = this.prepareKeyName(
@@ -172,6 +173,7 @@ export class RedisStorage implements StorageAdapter {
 		);
 
 		// get the first item in the stack
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const serializedState: any = await getByListIndex(keyName, index);
 
 		// deserialize the state
@@ -195,6 +197,7 @@ export class RedisStorage implements StorageAdapter {
 		// make sure the database is ready
 		this.ensureDatabaseIsReady();
 
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const getListLength = promisify<string, number>(this.connection!.llen).bind(this.connection!);
 
 		const keyName: string = this.prepareKeyName(
@@ -212,7 +215,7 @@ export class RedisStorage implements StorageAdapter {
 	 * Get a flow history
 	 * @param flowId Target flow ID
 	 */
-	async history(flowId: string): Promise<Array<any>> {
+	async history(flowId: string): Promise<Array<any>> {  // eslint-disable-line @typescript-eslint/no-explicit-any
 
 		if (!flowId) {
 			throw new ApplicationError({
@@ -223,6 +226,7 @@ export class RedisStorage implements StorageAdapter {
 		// make sure the database is ready
 		this.ensureDatabaseIsReady();
 
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const getListItems = promisify<string, number, number, Array<string>>(this.connection!.lrange).bind(this.connection!);
 
 		const keyName: string = this.prepareKeyName(
@@ -249,9 +253,10 @@ export class RedisStorage implements StorageAdapter {
 	 */
 	private async generateFlowId(): Promise<string> {
 
-		let flowId: string = '';
-		let isUnique: boolean = false;
+		let flowId = '';
+		let isUnique = false;
 
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const checkKeyExistence = promisify<string, number>(this.connection!.exists).bind(this.connection!);
 
 		while (!isUnique) {
@@ -286,7 +291,9 @@ export class RedisStorage implements StorageAdapter {
 	 * Make sure that the database and all the database-related objects are initialized
 	 */
 	private ensureDatabaseIsReady(): void {
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		if (!this.connection) { Promise.reject(new ApplicationError({ ...errors.notConnected })); }
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		if (!this.connection!.connected) { Promise.reject(new ApplicationError({ ...errors.notConnected })); }
 	}
-};
+}

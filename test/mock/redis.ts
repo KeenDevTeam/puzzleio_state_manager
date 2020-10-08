@@ -12,7 +12,7 @@ loadEnv({
 	path: joinPath(resolvePath(__dirname, '..', '.env'))
 });
 
-const redisClientFactory = (url: string, db?: number, prefix: string = ''): Promise<RedisClient> =>
+const redisClientFactory = (url: string, db?: number, prefix = ''): Promise<RedisClient> =>
 	new Promise<RedisClient>((resolve, reject) => {
 
 		const client = new RedisClient({
@@ -25,7 +25,7 @@ const redisClientFactory = (url: string, db?: number, prefix: string = ''): Prom
 		client.on('error', err => reject(err));
 	});
 
-export const createValidRedisClient = (prefix: string = ''): Promise<RedisClient> =>
+export const createValidRedisClient = (prefix = ''): Promise<RedisClient> =>
 	redisClientFactory(
 		env('REDIS_URL').required().asUrlString(),
 		env('REDIS_DB').required().asIntPositive(),

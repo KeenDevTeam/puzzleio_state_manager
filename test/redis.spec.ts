@@ -52,15 +52,8 @@ describe('[PuzzleIO][StateManager][Storage][Redis]', () => {
 				await createValidRedisClient()
 			);
 
-			try {
-
-				expect(instance).to.be.instanceOf(RedisStorage);
-				expect(instance.initialize()).to.be.eventually.eq(undefined);
-			}
-			catch (err) {
-
-				throw err;
-			}
+			expect(instance).to.be.instanceOf(RedisStorage);
+			expect(instance.initialize()).to.be.eventually.eq(undefined);
 		});
 
 	});
@@ -119,7 +112,7 @@ describe('[PuzzleIO][StateManager][Storage][Redis]', () => {
 			const currentValue = await instance.load<number>(flowId);
 			expect(currentValue).to.be.a('number').that.is.eq(0);
 
-			await instance.save<number>(currentValue! + 1, flowId);
+			await instance.save<number>(currentValue! + 1, flowId); // eslint-disable-line @typescript-eslint/no-non-null-assertion
 			const updatedValue = await instance.load<number>(flowId);
 			expect(updatedValue).to.be.a('number').that.is.eq(1);
 		});
@@ -185,7 +178,7 @@ describe('[PuzzleIO][StateManager][Storage][Redis]', () => {
 	after((done) => {
 
 		createValidRedisClient()
-			.then(client => client.flushdb(cb => done()))
+			.then(client => client.flushdb(() => done()))
 			.catch(done);
 	});
 });
