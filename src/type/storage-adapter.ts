@@ -13,14 +13,14 @@ export interface StorageAdapter {
 	 * Initialize a new flow state and return the created flow ID
 	 * @param state Initial state of the flow
 	 */
-	save<T>(state: T): Promise<string | void>;
+	save<T>(state: T): Promise<string>;
 
 	/**
 	 * Modify the current state of a flow by using its ID
 	 * @param state Current state
 	 * @param flowId Flow ID
 	 */
-	save<T>(state: T, flowId?: string): Promise<string | void>;
+	save<T>(state: T, flowId?: string): Promise<string>;
 
 	/**
 	 * Get current state of a flow by using its ID

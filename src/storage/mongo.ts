@@ -93,14 +93,14 @@ export class MongoStorage implements StorageAdapter {
 	 * Add state for a new flow (initial state)
 	 * @param state Initial state of the flow
 	 */
-	async save<T>(state: T): Promise<string | void>;
+	async save<T>(state: T): Promise<string>;
 
 	/**
 	 * Set the current state of a flow
 	 * @param state Current state
 	 * @param flowId Flow ID
 	 */
-	async save<T>(state: T, flowId?: string): Promise<string | void> {
+	async save<T>(state: T, flowId?: string): Promise<string> {
 
 		// make sure the database is ready
 		this.ensureDatabaseIsReady();
@@ -161,8 +161,7 @@ export class MongoStorage implements StorageAdapter {
 			});
 		}
 
-		// return newly created flow's ID
-		if (isNew) { return flowId; }
+		return flowId;
 	}
 
 	/**

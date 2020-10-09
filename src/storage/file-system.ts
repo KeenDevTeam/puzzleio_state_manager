@@ -66,14 +66,14 @@ export class FileSystemStorage implements StorageAdapter {
 	 * Add state for a new flow (initial state)
 	 * @param state Initial state of the flow
 	 */
-	async save<T>(state: T): Promise<string | void>;
+	async save<T>(state: T): Promise<string>;
 
 	/**
 	 * Set the current state of a flow
 	 * @param state Current state
 	 * @param flowId Flow ID
 	 */
-	save<T>(state: T, flowId?: string): Promise<string | void> {
+	save<T>(state: T, flowId?: string): Promise<string> {
 
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		return new Promise((resolve, reject) => {
@@ -104,7 +104,7 @@ export class FileSystemStorage implements StorageAdapter {
 
 			// apply a small wait here
 			setTimeout(
-				() => resolve(isNew ? flowId : undefined),
+				() => resolve(flowId),
 				1,
 			);
 		});

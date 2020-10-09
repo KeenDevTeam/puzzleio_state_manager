@@ -39,14 +39,14 @@ export class MemoryStorage implements StorageAdapter {
 	 * Add state for a new flow (initial state)
 	 * @param state Initial state of the flow
 	 */
-	async save<T>(state: T): Promise<string | void>;
+	async save<T>(state: T): Promise<string>;
 
 	/**
 	 * Set the current state of a flow
 	 * @param state Current state
 	 * @param flowId Flow ID
 	 */
-	async save<T>(state: T, flowId?: string): Promise<string | void> {
+	async save<T>(state: T, flowId?: string): Promise<string> {
 
 		let isNew = false;
 
@@ -71,8 +71,7 @@ export class MemoryStorage implements StorageAdapter {
 		this.state[flowId].stack.push(state);
 		this.state[flowId].updatedAt = currentDate;
 
-		// return newly created flow's ID
-		if (isNew) { return flowId; }
+		return flowId;
 	}
 
 	/**
