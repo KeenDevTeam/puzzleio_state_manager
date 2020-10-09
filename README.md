@@ -115,7 +115,7 @@ const mongodbConfig = {
 };
 
 // Step 2
-const mongoStorage = new stateManager.storage.mongoDB.MongoStorage(mongodbClient, mongodbConfig);
+const mongoStorage = new stateManager.storage.mongodb.MongoStorage(mongodbClient, mongodbConfig);
 
 // Step 3
 await mongoStorage.initialize();
@@ -265,7 +265,7 @@ const mongodbConfig = {
 };
 
 // Step 2
-const mongoStorage = new stateManager.storage.mongoDB.MongoStorage(mongodbClient, mongodbConfig);
+const mongoStorage = new stateManager.storage.mongodb.MongoStorage(mongodbClient, mongodbConfig);
 
 // Step 3
 await mongoStorage.initialize();
