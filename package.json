@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com-personal:PuzzleIO/state-manager.git"
+    "url": "git@github.com-personal:PuzzleIO/state_manager.git"
   },
   "keywords": [
     "keen",
