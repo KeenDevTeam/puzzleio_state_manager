@@ -1,6 +1,6 @@
 {
   "name": "@puzzleio/state-manager",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Manage current state of the workflow using different backend providers.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
