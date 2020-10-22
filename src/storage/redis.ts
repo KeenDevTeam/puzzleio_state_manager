@@ -19,7 +19,7 @@ export type RedisStorageConfig = {
 };
 
 export const defaultConfig: RedisStorageConfig = {
-	prefix: 'PZIO'
+	prefix: 'PZST'
 };
 
 const errors = {
